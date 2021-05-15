@@ -1,6 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates.
 from torch import nn
-from torchvision.ops import roi_align
+#from torchvision.ops import roi_align
+from intel_pytorch_extension import roi_align
 
 
 # NOTE: torchvision's RoIAlign has a different default aligned=False
@@ -59,7 +60,7 @@ class ROIAlign(nn.Module):
             self.output_size,
             self.spatial_scale,
             self.sampling_ratio,
-            self.aligned,
+            #self.aligned,
         )
 
     def __repr__(self):

@@ -4,7 +4,8 @@
 from typing import List
 import torch
 from torchvision.ops import boxes as box_ops
-from torchvision.ops import nms  # BC-compat
+#from torchvision.ops import nms  # BC-compat
+from intel_pytorch_extension import nms
 
 from detectron2.utils.env import TORCH_VERSION
 
@@ -25,9 +26,9 @@ def batched_nms(
     assert boxes.shape[-1] == 4
     # TODO may need better strategy.
     # Investigate after having a fully-cuda NMS op.
-    if len(boxes) < 40000:
-        # fp16 does not have enough range for batched NMS
-        return box_ops.batched_nms(boxes.float(), scores, idxs, iou_threshold)
+    #if len(boxes) < 40000:
+    #    # fp16 does not have enough range for batched NMS
+    #    return box_ops.batched_nms(boxes.float(), scores, idxs, iou_threshold)
 
     result_mask = scores.new_zeros(scores.size(), dtype=torch.bool)
     for id in torch.jit.annotate(List[int], torch.unique(idxs).cpu().tolist()):
