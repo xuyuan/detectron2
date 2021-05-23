@@ -1,7 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates.
 from torch import nn
-#from torchvision.ops import roi_align
-from intel_pytorch_extension import roi_align
+from torchvision.ops import roi_align
+#from intel_pytorch_extension import roi_align
 
 
 # NOTE: torchvision's RoIAlign has a different default aligned=False
@@ -54,14 +54,18 @@ class ROIAlign(nn.Module):
             rois: Bx5 boxes. First column is the index into N. The other 4 columns are xyxy.
         """
         assert rois.dim() == 2 and rois.size(1) == 5
+        device = input.device
+        input = input.cpu()
+        rois = rois.cpu()
+        
         return roi_align(
             input,
             rois.to(dtype=input.dtype),
             self.output_size,
             self.spatial_scale,
             self.sampling_ratio,
-            #self.aligned,
-        )
+            self.aligned,
+        ).to(device)
 
     def __repr__(self):
         tmpstr = self.__class__.__name__ + "("
